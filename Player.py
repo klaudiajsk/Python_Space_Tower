@@ -4,10 +4,10 @@ WIDTH = 500
 HEIGHT = 600
 
 
-przyspieszenie = 1.5
-tarcie_podloze = -0.4
-grawitacja = 11
-skok = 9
+acceleration = 1.5
+ground_friction = -0.4
+gravitation = 11
+jump = 9
 
  
 class Player(pg.sprite.Sprite):
@@ -40,16 +40,16 @@ class Player(pg.sprite.Sprite):
     def update(self,dt):
        
        self.dt = dt
-       #przyspieszenie grawitacyjne
-       self.acc_y =  grawitacja
+       #gravitation
+       self.acc_y =  gravitation
        keys = pg.key.get_pressed()
-       #zetkniecie 2 obiektow false=> bez usuwania
-       zderzenie = pg.sprite.spritecollide(self, self.game.platformy, False)
+       # 2 objects touching=> without deleting
+       collision = pg.sprite.spritecollide(self, self.game.platformy, False)
        if self.velocity_y >0:
             
-            if zderzenie:
-               #pozycja y gracza przypisana do tego w co uderzyl (platformy) na pozycji top
-               self.pos_y = zderzenie[0].rect.top
+            if collision:
+               # y position of Player equal to top position of object that was collision with ( platform)
+               self.pos_y = collision[0].rect.top
                self.velocity_y =0
        
            
@@ -57,16 +57,16 @@ class Player(pg.sprite.Sprite):
            self.acc_x = 0
            
        
-       if zderzenie and keys[pg.K_SPACE]: 
-            self.velocity_y = -skok
+       if collision and keys[pg.K_SPACE]: 
+            self.velocity_y = -jump
        
        if keys[pg.K_LEFT]:
-           self.acc_x = -przyspieszenie
+           self.acc_x = -acceleration
        if keys[pg.K_RIGHT]:
-           self.acc_x = przyspieszenie
+           self.acc_x = acceleration
            
-       # dodanie hamowania na ruch w osi x   
-       self.acc_x += self.velocity_x * tarcie_podloze 
+       # adding braking in X- axis   
+       self.acc_x += self.velocity_x * ground_friction 
      
       
        self.velocity_x += self.acc_x*dt
@@ -74,7 +74,7 @@ class Player(pg.sprite.Sprite):
        self.pos_x += self.velocity_x +0.5 *self.acc_x*dt*dt
        self.pos_y += self.velocity_y +0.5 *self.acc_y*dt*dt
 
-       #dodanie granicy dla Player
+       #gravitation adding for Player
        if self.pos_x > WIDTH-15:
            self.pos_x =WIDTH-15
        if self.pos_x <0+15:
