@@ -19,30 +19,30 @@ class Game:
         self.running = True
 
     def new(self):
-        self.wynik = 0
-        self.obiekty = pg.sprite.Group()
-        self.platformy = pg.sprite.Group()
+        self.result = 0
+        self.objects = pg.sprite.Group()
+        self.platforms = pg.sprite.Group()
         self.players = pg.sprite.Group()
         self.player = Player(self)
         self.player.set_image("p1_front.png")
         self.players.add(self.player)
-        self.obiekty.add(self.player)
+        self.objects.add(self.player)
         
         p1 = Platform(0, 560, WIDTH, 40)
         p2 = Platform(200, 464, 100, 20)
         p3 = Platform(125, 348,80 , 20)
         p4 = Platform(350, 232, 90, 20) 
         p5 = Platform(175, 116, 110, 20)
-        self.obiekty.add(p1)
-        self.obiekty.add(p2)
-        self.obiekty.add(p3)
-        self.obiekty.add(p4)
-        self.obiekty.add(p5)
-        self.platformy.add(p1)
-        self.platformy.add(p2)
-        self.platformy.add(p3)
-        self.platformy.add(p4)
-        self.platformy.add(p5)
+        self.objects.add(p1)
+        self.objects.add(p2)
+        self.objects.add(p3)
+        self.objects.add(p4)
+        self.objects.add(p5)
+        self.platforms.add(p1)
+        self.platforms.add(p2)
+        self.platforms.add(p3)
+        self.platforms.add(p4)
+        self.platforms.add(p5)
         self.run()
 
     def run(self):
@@ -56,28 +56,28 @@ class Game:
 
     def update(self):
         # rekurencja
-        self.obiekty.update(self.dt)
+        self.objects.update(self.dt)
        
         if (self.player.pos_y -20) <= HEIGHT/4:
             self.player.pos_y +=abs(self.player.velocity_y)
-            for platforma in self.platformy:
+            for platforma in self.platforms:
                 platforma.rect.y += abs(self.player.velocity_y)
                 if platforma.rect.top >= HEIGHT:
                     platforma.kill()
-                    self.wynik += 1
+                    self.result += 1
                     
         if self.player.pos_y >HEIGHT:
-            for obiekt in self.obiekty:
+            for obiekt in self.objects:
                 obiekt.rect.y -= self.player.velocity_y
                 if obiekt.rect.bottom <0:
                     obiekt.kill()
-        if len(self.platformy) ==0:
+        if len(self.platforms) ==0:
             self.playing = False
                     
-        while len(self.platformy)<6:
+        while len(self.platforms)<6:
             p = Platform(random.randrange(70, 400), -30, 90, 20)
-            self.platformy.add(p)
-            self.obiekty.add(p)
+            self.platforms.add(p)
+            self.objects.add(p)
             
 
     def events(self):
@@ -93,13 +93,13 @@ class Game:
         bg = pg.transform.scale(bg, (500, 600))
         self.screen.fill(BLACK)
         self.screen.blit(bg,(0,0))
-        self.obiekty.draw(self.screen)
+        self.objects.draw(self.screen)
         self.czcionka = pg.font.match_font('arial')
         fontObj = pg.font.Font(self.czcionka, 22)
-        wynik = fontObj.render(str(self.wynik), True, WHITE)
-        text_rect = wynik.get_rect()
+        result = fontObj.render(str(self.result), True, WHITE)
+        text_rect = result.get_rect()
         text_rect.midtop = (WIDTH / 2, 15)
-        self.screen.blit(wynik, text_rect)
+        self.screen.blit(result, text_rect)
         pg.display.flip()
 
         
@@ -119,7 +119,7 @@ class Game:
         self.screen.fill(BGCOLOR)
         self.czcionka = pg.font.match_font('arial')
         fontObj = pg.font.Font(self.czcionka, 48)
-        text1 = fontObj.render("Wynik " + str(self.wynik), True, WHITE)
+        text1 = fontObj.render("Result " + str(self.result), True, WHITE)
         text_rect = text1.get_rect()
         text_rect.midtop = (WIDTH/2, HEIGHT/4)
         self.screen.blit(text1, text_rect)
